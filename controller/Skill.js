@@ -29,7 +29,7 @@ exports.CreateSkill = async (req, res) => {
         });
 
         /* console.log(newSkill); */
-
+        // Return a success response
         return res.status(201).json({ message: 'Skill created successfully' });
     }
     catch (error) {
