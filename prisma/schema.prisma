@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model User {
+  id           Int            @id @default(autoincrement())
+  name         String?
+  email        String         @unique
+  password     String
+  role         Role           @default(USER)
+  records      Record[]
+  family       FamilyMember[]
+  skills       Skill[]
+  education    Education[]
+  dreamnotes   DreamNote[]
+  certificates Certificate[]
+  images       Image[]
+  activities   Activity[]
+  favorites    Favorite[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Record {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  avatar    String?
+  birthdate DateTime?
+  bio       String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model FamilyMember {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  name      String?
+  relation  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Skill {
+  id          Int        @id @default(autoincrement())
+  user        User       @relation(fields: [userId], references: [id])
+  userId      Int
+  name        String
+  description String? // optional
+  level       SkillLevel @default(BEGINNER)
+  images      Image[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Education {
+  id           Int       @id @default(autoincrement())
+  user         User      @relation(fields: [userId], references: [id])
+  userId       Int
+  institution  String?
+  degree       String?
+  fieldOfStudy String?
+  gpa          Float?
+  startDate    DateTime?
+  endDate      DateTime?
+  images       Image[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model DreamNote {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  title     String?
+  content   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Certificate {
+  id           Int       @id @default(autoincrement())
+  user         User      @relation(fields: [userId], references: [id])
+  userId       Int
+  title        String?
+  organization String?
+  issueDate    DateTime?
+  images       Image[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Activity {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  name        String
+  description String?
+  date        DateTime?
+  images      Image[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Favorite {
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  name       String
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  favorites Favorite[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Image {
+  id            Int          @id @default(autoincrement())
+  user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        Int?
+  skill         Skill?       @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  skillId       Int?
+  education     Education?   @relation(fields: [educationId], references: [id], onDelete: Cascade)
+  educationId   Int?
+  certificate   Certificate? @relation(fields: [certificateId], references: [id], onDelete: Cascade)
+  certificateId Int?
+  activity      Activity?    @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  activityId    Int?
+  imageUrl      String?
+  assetId       String?
+  publicId      String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
