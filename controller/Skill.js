@@ -6,15 +6,23 @@ exports.CreateSkill = async (req, res) => {
         const { userId } = req.params
         // Validate input
         if (!name || !description) {
-            return res.status(400).json({ message: 'Name and description are required' });
+            return res.status(200).json({ message: 'Name and description are required' });
         }
-
+        const skillcheck = await prisma.skill.findFirst({
+            where: {
+                name: name,
+                userId: Number(userId) // Assuming you have a userId field in your skill model
+            }
+        });
         const existingSkill = await prisma.skill.findUnique({
-            where: { name: name }
+            where: {
+                id: skillcheck ? skillcheck.id : null, // Check if the skill already exists for the user
+                name: name
+            }
         });
 
         if (existingSkill) {
-            return res.status(400).json({ message: "ชื่อสกิลนี้มีอยู่แล้ว" });
+            return res.status(200).json({ message: `name ${existingSkill.name} Unique` });
         }
         // Here you would typically save the skill to the database
         // For example:
@@ -40,7 +48,8 @@ exports.CreateSkill = async (req, res) => {
         return res.status(201).json({ message: 'Skill created successfully' });
     }
     catch (error) {
-
+        console.error(error);
+        // Handle errors appropriately
         return res.status(500).json({ message: 'Server error' });
     }
 }
