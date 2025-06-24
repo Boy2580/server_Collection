@@ -34,6 +34,10 @@ exports.middleUser = async(req, res, next) => {
   }
   catch (error) {
     // If an error occurs, respond with a 401 Unauthorized status
+    /* console.log("middleUser",error); */
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'jwt expired' });
+    }
     return res.status(401).json({ message: 'server errer' });
   }
 }
@@ -62,6 +66,10 @@ exports.middleAdmin = async(req, res, next) => {
   }
   catch (error) {
     // If an error occurs, respond with a 401 Unauthorized status
+    /* console.log("middleAdmin",error); */
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'jwt expired' });
+    }
     return res.status(401).json({ message: 'server errer' });
   }
 }
