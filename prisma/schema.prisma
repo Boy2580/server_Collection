@@ -62,7 +62,7 @@ model Skill {
   id          Int        @id @default(autoincrement())
   user        User       @relation(fields: [userId], references: [id])
   userId      Int
-  name        String
+  name        String    
   description String? // optional
   level       SkillLevel @default(BEGINNER)
   images      Image[]
