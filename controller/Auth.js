@@ -74,7 +74,7 @@ exports.Login = async(req, res) => {
         if (err) throw err;
         if (isMatch) {
           // Generate JWT token
-          const token = jwt.sign(Payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
+          const token = jwt.sign(Payload, process.env.JWT_SECRET, { expiresIn: '1d' }, (err, token) => {
             if (err) {
               console.error(err);
               return res.status(500).send('Error generating token');
